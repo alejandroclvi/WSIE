@@ -52,7 +52,7 @@ export default class ProviderInfo extends Component {
 const styles = StyleSheet.create({
     header: {
         width:'100%',
-        height:'33%',
+        height:'35%',
         backgroundColor:'grey',
     },
     container: {
@@ -74,10 +74,10 @@ const styles = StyleSheet.create({
         backgroundColor:'white',
         opacity:0.7,
         zIndex:1,
-        height:75,
+        height:80,
     },
     topBarIcon: {
-        paddingTop:30,
+        paddingTop:40,
         position:'absolute',
         right:'7%'
     },

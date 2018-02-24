@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
         height:75,
     },
     topBarIcon: {
-        paddingTop:30,
+        paddingTop:50,
         position:'absolute',
         right:'7%'
     }
