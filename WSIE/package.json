@@ -9,7 +9,11 @@
   "dependencies": {
     "react": "16.2.0",
     "react-native": "0.53.3",
-    "react-native-deck-swiper": "^1.4.8"
+    "react-native-deck-swiper": "^1.4.8",
+    "react-native-elements": "^0.19.0",
+    "react-native-image-placeholder": "^1.0.14",
+    "react-native-vector-icons": "^4.5.0",
+    "react-navigation": "^1.1.2"
   },
   "devDependencies": {
     "babel-jest": "22.4.1",
