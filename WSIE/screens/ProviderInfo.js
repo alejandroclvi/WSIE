@@ -33,6 +33,7 @@ export default class ProviderInfo extends Component {
                     </View>
                     <Image style = {styles.coverImg} source={{uri:'https://duyt4h9nfnj50.cloudfront.net/sku/f662d4a041512a5cac801c4e0f223fc0'}} />    
                 </View>
+
                 <Gadgets />
 
                 <View style={styles.mapContainer}>
@@ -68,6 +69,7 @@ const styles = StyleSheet.create({
         width:'100%',
         height:'35%',
         backgroundColor:'grey',
+        marginBottom:10,
     },
     container: {
         height:'100%',
@@ -110,6 +112,7 @@ const styles = StyleSheet.create({
         width:'100%',
         flexDirection:'column',
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
+        marginTop:10
     }
 });

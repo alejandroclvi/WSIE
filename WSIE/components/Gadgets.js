@@ -55,7 +55,7 @@ export default class Gadgets extends Component {
                         <Text style={styles.label}>call</Text>
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight onPress={this.handleGetDirections.bind(this)}>   
+                <TouchableHighlight style={{backgroundColor:'white'}} onPress={this.handleGetDirections.bind(this)}>   
                     <View style={styles.mapGContainer}> 
                         <Icon name="map-pin" type="feather" size={30} color="#E53A40" />
                         <Text style={styles.label}>go</Text>
@@ -75,7 +75,6 @@ export default class Gadgets extends Component {
 
 const styles = StyleSheet.create({
     gadgetsContainer: {
-        height:85,
         width:'100%',
         flexDirection:'row',
         justifyContent:'space-between',
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
         flexDirection:'column',
         justifyContent:'center',
         alignItems:'center',
-        paddingTop:8,
+        paddingTop:12,
         backgroundColor:'white',
     },
     mapGContainer: {
@@ -99,6 +98,7 @@ const styles = StyleSheet.create({
         flexDirection:'column',
         justifyContent:'center',
         alignItems:'center',
+        paddingTop:4,
         backgroundColor:'white',
     },
     shareGContainer: {
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
         flexDirection:'column',
         justifyContent:'center',
         alignItems:'center',
-        paddingTop:1,
+        paddingTop:5,
         backgroundColor:'white',
     },
     label: {
