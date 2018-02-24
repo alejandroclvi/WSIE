@@ -12,6 +12,7 @@ import {
 import { Icon } from 'react-native-elements'
 import Gadgets from '../components/Gadgets';
 import MenuComponent from '../components/MenuComponent';
+import MapComponent from '../components/MapComponent';
 
 export default class ProviderInfo extends Component {
 
@@ -34,6 +35,21 @@ export default class ProviderInfo extends Component {
                 </View>
                 <Gadgets />
 
+                <View style={styles.mapContainer}>
+                    <MapComponent 
+                        userLocationLat={25.749718515267066} 
+                        userLocationLon={-80.25607891948833} 
+                        truckLocationLat={25.749718515267043} 
+                        truckLocationLon={-80.25607891948856} 
+                        region={{
+                            latitude:25.749718515267043,
+                            longitude:-80.25607891948856,
+                            latitudeDelta:0.018,
+                            longitudeDelta:0.018,
+                        }} 
+                    />
+                </View>
+
                 <View style={{marginTop:30}} />
 
                 <View style={styles.menuBar}>
@@ -41,8 +57,6 @@ export default class ProviderInfo extends Component {
                 </View>
 
                 <MenuComponent menu={menu} />
-
-
 
             </View>
         );
@@ -93,10 +107,9 @@ const styles = StyleSheet.create({
         fontWeight:'bold'
     },
     mapContainer: {
-        width:'94%',
-        height:150,
-        borderRadius:5,
-        overflow:'hidden',
-        marginTop:5,
+        width:'100%',
+        flexDirection:'column',
+        justifyContent:'center',
+        alignItems:'center'
     }
 });
