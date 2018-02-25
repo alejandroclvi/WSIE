@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Icon } from 'react-native-elements';
 import Communications from 'react-native-communications';
-//import getDirections from 'react-native-google-maps-directions'; --> * need to npm install this & configure
+import getDirections from 'react-native-google-maps-directions';
 
 export default class Gadgets extends Component {
 
@@ -24,8 +24,6 @@ export default class Gadgets extends Component {
     };
 
     handleGetDirections = () => {
-        //TODO: Configure this
-        /*
         const data = {
            source: {
             latitude: this.props.source.lat,
@@ -43,7 +41,6 @@ export default class Gadgets extends Component {
           ]
         };
         getDirections(data);
-        */
       };
 
     render() {

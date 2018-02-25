@@ -54,6 +54,8 @@ export default class ProviderInfo extends Component {
 
                 <Gadgets phone={phone} name={name}/>
 
+                <View style={{marginTop:15}} />
+                
                 <View style={{flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
                     <Text style={styles.label}>{name}</Text>
                     <Text style={styles.infoLabel}>{name}</Text>
