@@ -26,6 +26,7 @@ export default class Home extends Component {
         this.state = {
             loading:true,
             loadedData:false,
+            currentUrl:'',
             cardIndex:0,
             data:[],
             userLocation: {
@@ -43,7 +44,7 @@ export default class Home extends Component {
         if(!prevState.loadedData && this.state.loadedData) {
             this.setState({loading:false});
         }
-        console.log(this.state);
+        console.log(this.state.cardIndex);
     }
 
     getPopularPlates = () => {
@@ -98,22 +99,28 @@ export default class Home extends Component {
         const currentIndex = this.state.index;
         this.props.navigation.navigate('ProviderInfo');
     };
-        
+    
+    handleSwipe = (cardIndex) => {
+        this.setState({cardIndex:cardIndex + 1});
+    };
+
     render () {
         if(!this.state.loading) {
             return (
                 <View style={styles.container}>
                     <Swiper
                         cards={this.state.data}
-                        renderCard={card => {
+                        renderCard={ card => {
                             return (
                                 <View style={styles.card}>
-                                    <ImageLoad
-                                        resizeMode={'contain'}
-                                        style={{ width: '100%', height: '50%' }}
-                                        loadingStyle={{ size: 'large', color: 'red' }}
-                                        source={{ uri: card.url }}
-                                    />
+                                    <View style={styles.imgContainer}>
+                                        <ImageLoad
+                                            resizeMode={'contain'}
+                                            style={{ width: '100%', height: '100%'}}
+                                            loadingStyle={{ size: 'large', color: 'red' }}
+                                            source={{ uri: card.url }}
+                                        />
+                                    </View>
                                     <View style={styles.info}>
                                         <Text style={styles.name}>
                                         {card.name}
@@ -125,14 +132,14 @@ export default class Home extends Component {
                                 </View>
                             );
                         }}
-                        onTapCard={() => this.props.navigation.navigate('BigPicture', {uri:this.state.data[this.state.index]})}
+                        onTapCard={() => this.props.navigation.navigate('BigPicture', {uri:this.state.data[this.state.cardIndex].url})}
                         disableBottomSwipe={true}
                         disableTopSwipe={true}
                         animateOverlayLabelsOpacity={true}
                         onSwipedRight={this.handleLearnMore}
-                        onSwiped={(cardIndex) => this.setState({count:cardIndex})}
+                        onSwiped={ cardIndex => this.handleSwipe(cardIndex)}
                         infinite={true}
-                        cardIndex={this.state.index}
+                        cardIndex={this.state.cardIndex}
                         backgroundColor={'#E53A40'}>
                     </Swiper>
                 </View>
@@ -140,11 +147,15 @@ export default class Home extends Component {
         }
 
         return (
-            <View style={{backgroundColor:'white', flex:1}}>
-                <ActivityIndicator
-                    loading={this.state.loading}
-                    size='large'
-                />
+            <View style={{flex:1, flexDirection:'column', backgroundColor: '#E53A40', justifyContent:'center', alignItems:'center'}}>
+                
+                    <ActivityIndicator
+                        loading={this.state.loading}
+                        size='large'
+                        color='white'
+                    />
+                    <Text style={{marginTop:5, textAlign:'center', color:'white'}}>loading ...</Text>
+                
             </View>
         );
         
@@ -155,6 +166,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E53A40'
+  },
+  imgContainer: {
+    width:'100%',
+    height:'50%'
   },
   card: {
     height:'100%',
@@ -171,8 +186,8 @@ const styles = StyleSheet.create({
     width:'100%',
     bottom:0,
     height:'50%',
-    backgroundColor:'white',
-    opacity:0.85
+    //backgroundColor:'grey',
+    opacity:0.7
   },
   text: {
     textAlign: 'center',
@@ -195,5 +210,15 @@ const styles = StyleSheet.create({
   swiperContainer: {
     flex: 1,
     backgroundColor: '#E53A40'
+  },
+  loadingContainer: {
+    width:100,
+    height:100,
+    borderRadius:15,
+    backgroundColor:'grey',
+    opacity:0.75,
+    flexDirection:'column',
+    justifyContent:'center',
+    alignItems:'center'
   }
 });
