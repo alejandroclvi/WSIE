@@ -5,10 +5,14 @@ import {
   StyleSheet,
   Text,
   Button,
-  View
+  View,
+  ActivityIndicator
 } from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import ImageLoad from 'react-native-image-placeholder';
+import { nearEachOther } from '../helpers/nearEachOther';
+import * as firebase from 'firebase';
+import { NEARBY_CONST_IN_MILES } from '../data/distanceConstant';
 
 
 export default class Home extends Component {
@@ -16,10 +20,78 @@ export default class Home extends Component {
     constructor(props) {
         super(props);
 
+        this.database = firebase.database().ref('/providers');
+
+
         this.state = {
-            data:['https://duyt4h9nfnj50.cloudfront.net/sku/f662d4a041512a5cac801c4e0f223fc0','https://d1ralsognjng37.cloudfront.net/c91007a5-4822-476c-bbb6-44694bad15cb','https://duyt4h9nfnj50.cloudfront.net/sku/28a7dc8276f7e3ca74e84cd53d4d37b2','https://duyt4h9nfnj50.cloudfront.net/sku/dc0d0cb8300ea0a985aecf1a3bd49ae0','https://duyt4h9nfnj50.cloudfront.net/sku/be3c429d9d4d35f7868d31ecfcae0146','https://duyt4h9nfnj50.cloudfront.net/sku/56f4865966ddd6c471ce713870564643', 'https://duyt4h9nfnj50.cloudfront.net/sku/27ecfa487fc761fc17a29cd80c638371', 'https://duyt4h9nfnj50.cloudfront.net/sku/7c56a19ee53bd58a61531d6bd1b624d9', 'https://duyt4h9nfnj50.cloudfront.net/sku/f8f16686fb30b2555138db05b75bb904'],
-            index:0,
+            loading:true,
+            loadedData:false,
+            cardIndex:0,
+            data:[],
+            userLocation: {
+                lat:25.767934662748328,
+                lon:-80.28324566001163,
+            }
         }
+    }
+
+    componentDidMount () {
+        this.getPopularPlates();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(!prevState.loadedData && this.state.loadedData) {
+            this.setState({loading:false});
+        }
+        console.log(this.state);
+    }
+
+    getPopularPlates = () => {
+        // loading
+        //this.setState({loading: true});
+        console.log("out");
+        this.database.on('value', snapshot => {
+            console.log("in");
+            const dataObj = snapshot.val();
+            if(dataObj && Object.values(dataObj).length > 0) {
+                let popular = [];
+                let popularTruckItems = [];
+                snapshot.forEach( provider => {
+                    if( provider.key !== undefined) {
+                        if(nearEachOther(this.state.userLocation, provider.val().location, NEARBY_CONST_IN_MILES)) {
+                
+                            if(provider.val().menu && provider.val().menu.hasOwnProperty('popular')) {
+                                popularTruckItems = Object.values(provider.val().menu.popular.data);
+                            }
+                            else if(provider.val().menu && provider.val().menu.hasOwnProperty('Popular')) {
+                                popularTruckItems = Object.values(provider.val().menu.Popular.data);
+                            }
+
+                            if(popularTruckItems !== null) {
+                                for(let popularItem of popularTruckItems) {
+                                    popularItem.key = provider.key;
+                                    if(popularItem.popular){
+                                        popular.push(popularItem);
+                                    }
+                                }
+                            }    
+                        }
+                    }
+            
+                });
+
+                this.setState({
+                    data: popular,
+                    loadedData:true,
+                });
+            }  else {
+                /*
+                this.setState({
+                    loading:false,
+                });
+                */
+            }
+        });
     }
 
     handleLearnMore = () => {
@@ -28,43 +100,54 @@ export default class Home extends Component {
     };
         
     render () {
+        if(!this.state.loading) {
+            return (
+                <View style={styles.container}>
+                    <Swiper
+                        cards={this.state.data}
+                        renderCard={card => {
+                            return (
+                                <View style={styles.card}>
+                                    <ImageLoad
+                                        resizeMode={'contain'}
+                                        style={{ width: '100%', height: '50%' }}
+                                        loadingStyle={{ size: 'large', color: 'red' }}
+                                        source={{ uri: card.url }}
+                                    />
+                                    <View style={styles.info}>
+                                        <Text style={styles.name}>
+                                        {card.name}
+                                        </Text>
+                                        <Text style={styles.description}>
+                                        {card.desc}
+                                        </Text>
+                                    </View>
+                                </View>
+                            );
+                        }}
+                        onTapCard={() => this.props.navigation.navigate('BigPicture', {uri:this.state.data[this.state.index]})}
+                        disableBottomSwipe={true}
+                        disableTopSwipe={true}
+                        animateOverlayLabelsOpacity={true}
+                        onSwipedRight={this.handleLearnMore}
+                        onSwiped={(cardIndex) => this.setState({count:cardIndex})}
+                        infinite={true}
+                        cardIndex={this.state.index}
+                        backgroundColor={'#E53A40'}>
+                    </Swiper>
+                </View>
+            );
+        }
+
         return (
-        <View style={styles.container}>
-            <Swiper
-                cards={this.state.data}
-                renderCard={(card) => {
-                    return (
-                        <View style={styles.card}>
-                        <ImageLoad
-                            style={{ width: '100%', height: '100%' }}
-                            loadingStyle={{ size: 'large', color: 'red' }}
-                            source={{ uri: card }}
-                        />
-                        <View style={styles.info}>
-                            <Text style={styles.name}>
-                            Super Duper Burger
-                            </Text>
-                            <Text style={styles.description}>
-                            Ham, Cheese, Bacon, Lettuce, Tomatoes, Fried Onions, Fried Cheese,& Egg.
-                            </Text>
-                        </View>
-                        </View>
-                    )
-                }}
-                onTapCard={() => this.props.navigation.navigate('BigPicture', {uri:this.state.data[this.state.index]})}
-                disableBottomSwipe={true}
-                disableTopSwipe={true}
-                animateOverlayLabelsOpacity={true}
-                onSwipedRight={this.handleLearnMore}
-                onSwiped={(cardIndex) => this.setState({count:cardIndex})}
-                infinite={true}
-                cardIndex={this.state.index}
-                backgroundColor={'#E53A40'}>
-            </Swiper>
-            <View style={styles.swipeLeftBtn}>
+            <View style={{backgroundColor:'white', flex:1}}>
+                <ActivityIndicator
+                    loading={this.state.loading}
+                    size='large'
+                />
             </View>
-        </View>
         );
+        
     }
 }
 
@@ -79,15 +162,16 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 2,
     borderColor: '#3E4348',
-    justifyContent: 'center',
+    flexDirection:'column',
+    justifyContent: 'flex-start',
     backgroundColor: 'white',
   },
   info: {
     position:'absolute',
     width:'100%',
     bottom:0,
-    height:'23%',
-    backgroundColor:'#3E4348',
+    height:'50%',
+    backgroundColor:'white',
     opacity:0.85
   },
   text: {
@@ -97,15 +181,19 @@ const styles = StyleSheet.create({
   },
   description:{
     fontSize:13,
-    color:'white',
+    color:'black',
     fontWeight:'bold',
     marginLeft:10,
     marginRight:10
   },
   name: {
     fontSize:20,
-    color:'white',
+    color:'black',
     fontWeight:'bold',
     padding: 10,
   },
+  swiperContainer: {
+    flex: 1,
+    backgroundColor: '#E53A40'
+  }
 });

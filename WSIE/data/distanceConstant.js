@@ -1,0 +1,1 @@
+export const NEARBY_CONST_IN_MILES = 18;
