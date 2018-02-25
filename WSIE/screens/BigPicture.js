@@ -9,7 +9,8 @@ import {
   Animated,
   TouchableHighlight
 } from 'react-native';
-import { Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements';
+import ImageLoad from 'react-native-image-placeholder';
 
 export default class BigPicture extends Component {
 
@@ -24,7 +25,13 @@ export default class BigPicture extends Component {
                 <View style={styles.toBanner}>
                     <Icon onPress={this.handleCloseScreen} name="close" type="font-awesome" size={35} color={'#E53A40'} containerStyle={styles.topBarIcon}/>
                 </View>
-                <Image resizeMode={'contain'} style = {styles.coverImg} source={{uri:uri}} />    
+                <ImageLoad
+                    backgroundColor='white'
+                    resizeMode={'contain'}
+                    style={styles.coverImg}
+                    loadingStyle={{ size: 'large', color: 'red' }}
+                    source={{ uri: uri }}
+                />  
             </View>
         );
     }

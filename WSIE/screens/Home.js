@@ -96,8 +96,13 @@ export default class Home extends Component {
     }
 
     handleLearnMore = () => {
-        const currentIndex = this.state.index;
-        this.props.navigation.navigate('ProviderInfo');
+        const currentIndex = this.state.cardIndex;
+        const providerKey = this.state.data[currentIndex].key;
+        const firebaseDBRef = firebase.database().ref(`/providers/${providerKey}`);
+        firebaseDBRef.once('value', snap => {
+            const provider = snap.val();
+            this.props.navigation.navigate('ProviderInfo', {provider: provider});    
+        });
     };
     
     handleSwipe = (cardIndex) => {
@@ -115,6 +120,7 @@ export default class Home extends Component {
                                 <View style={styles.card}>
                                     <View style={styles.imgContainer}>
                                         <ImageLoad
+                                            backgroundColor='white'
                                             resizeMode={'contain'}
                                             style={{ width: '100%', height: '100%'}}
                                             loadingStyle={{ size: 'large', color: 'red' }}

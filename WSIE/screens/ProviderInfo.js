@@ -7,12 +7,14 @@ import {
   Button,
   View,
   Animated,
-  TouchableHighlight
+  TouchableHighlight,
+  ScrollView
 } from 'react-native';
 import { Icon } from 'react-native-elements'
 import Gadgets from '../components/Gadgets';
 import MenuComponent from '../components/MenuComponent';
 import MapComponent from '../components/MapComponent';
+import ImageLoad from 'react-native-image-placeholder';
 
 export default class ProviderInfo extends Component {
 
@@ -21,20 +23,43 @@ export default class ProviderInfo extends Component {
     };
 
     render () {
-        const menu = [{
-            data:[{name:'test', price:'0.99', desc:'test', category:'Bakery'}],
-            title:'Bakery'
-        }]
+        const {
+            menu,
+            coverImg,
+            name,
+            description,
+            phone,
+            location
+        } = this.props.navigation.state.params.provider;
+        const formattedMenu = Object.values(menu).sort( category => {
+            if(category.title.toLowerCase() == 'popular') {
+                return -1;
+            } else {
+                return 1;
+            }
+        });
         return (
             <View style={styles.container}>
+                <ScrollView style={{flex:1}}>
                 <View style={styles.header}>
                     <View style={styles.toBanner}>
                         <Icon onPress={this.handleCloseScreen} name="close" type="font-awesome" size={35} color={'#E53A40'} containerStyle={styles.topBarIcon}/>
                     </View>
-                    <Image style = {styles.coverImg} source={{uri:'https://duyt4h9nfnj50.cloudfront.net/sku/f662d4a041512a5cac801c4e0f223fc0'}} />    
+                    <ImageLoad 
+                        backgroundColor='white'
+                        style={styles.coverImg} 
+                        source={{uri:coverImg}} 
+                    />    
                 </View>
 
-                <Gadgets />
+                <Gadgets phone={phone} name={name}/>
+
+                <View style={{flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
+                    <Text style={styles.label}>{name}</Text>
+                    <Text style={styles.infoLabel}>{name}</Text>
+                </View>
+
+                <View style={{marginTop:15}} />
 
                 <View style={styles.mapContainer}>
                     <MapComponent 
@@ -51,14 +76,10 @@ export default class ProviderInfo extends Component {
                     />
                 </View>
 
-                <View style={{marginTop:30}} />
+                <View style={{marginTop:15}} />
 
-                <View style={styles.menuBar}>
-                    <Text style={styles.menuLabel}>MENU</Text>
-                </View>
-
-                <MenuComponent menu={menu} />
-
+                <MenuComponent menu={formattedMenu} />
+            </ScrollView>
             </View>
         );
     }
@@ -67,7 +88,7 @@ export default class ProviderInfo extends Component {
 const styles = StyleSheet.create({
     header: {
         width:'100%',
-        height:'35%',
+        height:270,
         backgroundColor:'grey',
         marginBottom:10,
     },
@@ -104,9 +125,13 @@ const styles = StyleSheet.create({
         alignItems:'center',
         marginTop:10,
     },
-    menuLabel: {
+    label: {
         fontSize:16,
         fontWeight:'bold'
+    },    
+    infoLabel: {
+        fontSize:14,
+        color:'grey'
     },
     mapContainer: {
         width:'100%',

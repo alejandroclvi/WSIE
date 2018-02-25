@@ -13,7 +13,7 @@ import Communications from 'react-native-communications';
 
 export default class Gadgets extends Component {
 
-    shareMsg = `Hey, check out ${this.props.truckName} this delicious food on the WISE app, now in the App Store and Google Play!`;
+    shareMsg = `Hey, check out ${this.props.name}\'s delicious food on the WISE app, available in the App Store and Google Play!`;
 
     handleShare = () => {
         if(Platform.OS === 'ios') {
@@ -49,7 +49,7 @@ export default class Gadgets extends Component {
     render() {
         return(
             <View style={styles.gadgetsContainer}>
-                <TouchableHighlight onPress={() => Communications.phonecall(this.props.phoneNumber.toString(), true)}>
+                <TouchableHighlight onPress={() => Communications.phonecall(this.props.phone.toString(), true)}>
                     <View style={styles.phoneGContainer}>
                         <Icon name='phone' type="font-awesome" size={30} color="#E53A40"/>
                         <Text style={styles.label}>call</Text>
