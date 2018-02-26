@@ -19,3 +19,26 @@ export const StackNav = StackNavigator({
     mode:'modal',
     headerMode:'none',
 });
+
+const defaultGetStateForAction = StackNav.router.getStateForAction;
+let lastNavigationAction = null;
+
+StackNav.router.getStateForAction = (action, state) => {
+    const time = Date.now();
+
+    if(lastNavigationAction === null) {
+        lastNavigationAction = action;
+        lastNavigationAction.time = time;
+
+        return defaultGetStateForAction(action, state);
+    }
+    else if(time - lastNavigationAction.time < 1000) {
+
+        return null;
+    }
+    else {
+        lastNavigationAction = action;
+        lastNavigationAction.time = time;
+        return defaultGetStateForAction(action, state);
+    } 
+};

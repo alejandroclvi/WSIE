@@ -128,11 +128,10 @@ export default class Home extends Component {
                     loadedData:true,
                 });
             }  else {
-                /*
                 this.setState({
-                    loading:false,
+                    loadedData:false,
+                    loading:true,
                 });
-                */
             }
         });
     }
@@ -181,7 +180,6 @@ export default class Home extends Component {
                                 </View>
                             );
                         }}
-                        onTapCard={() => this.props.navigation.navigate('BigPicture', {uri:this.state.data[this.state.cardIndex].url})}
                         disableBottomSwipe={true}
                         disableTopSwipe={true}
                         animateOverlayLabelsOpacity={true}
