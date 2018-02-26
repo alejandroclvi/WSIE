@@ -140,6 +140,7 @@ export default class Home extends Component {
     handleLearnMore = () => {
         const currentIndex = this.state.cardIndex;
         const providerKey = this.state.data[currentIndex].key;
+        console.log(providerKey);
         const firebaseDBRef = firebase.database().ref(`/providers/${providerKey}`);
         firebaseDBRef.once('value', snap => {
             const provider = snap.val();
@@ -180,7 +181,7 @@ export default class Home extends Component {
                                 </View>
                             );
                         }}
-                        onTapCard={() => this.props.navigation.navigate('BigPicture', {uri:this.state.data[this.state.cardIndex + 1].url})}
+                        onTapCard={() => this.props.navigation.navigate('BigPicture', {uri:this.state.data[this.state.cardIndex].url})}
                         disableBottomSwipe={true}
                         disableTopSwipe={true}
                         animateOverlayLabelsOpacity={true}
