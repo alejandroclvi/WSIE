@@ -29,14 +29,18 @@ export default class Home extends Component {
             currentUrl:'',
             cardIndex:0,
             data:[],
+            lastLocation:{},
+            locationEnabled:true,
             userLocation: {
-                lat:25.767934662748328,
-                lon:-80.28324566001163,
+                lat:0,
+                lon:0,
             }
         }
     }
 
     componentDidMount () {
+        this.getUserLocation();
+        this.watchUserLocation();
         this.getPopularPlates();
     }
 
@@ -44,15 +48,53 @@ export default class Home extends Component {
         if(!prevState.loadedData && this.state.loadedData) {
             this.setState({loading:false});
         }
-        console.log(this.state.cardIndex);
     }
 
+    getUserLocation = (callback) => {
+        navigator.geolocation.getCurrentPosition((position) => {
+            let lat = parseFloat(position.coords.latitude);
+            let lon = parseFloat(position.coords.longitude);
+    
+            let userCoords = {
+                lat:lat,
+                lon:lon,
+            }
+
+            this.setState({ 
+                userLocation:userCoords,
+                lastLocation:userCoords
+            });
+        },
+        (error) => this.setState({ locationEnabled: false })
+        );
+    };
+
+    watchUserLocation = () => {
+        // set a listener for changes in the user location.
+        this.watchId = navigator.geolocation.watchPosition((position)=> {
+            var lat = parseFloat(position.coords.latitude);
+            var lon = parseFloat(position.coords.longitude);
+            const lastUserCoords = {
+                lat:lat,
+                lon:lon,
+            }
+
+            this.setState({
+                userLocation:lastUserCoords
+            });
+            
+            const lastLocation = this.state.lastLocation;
+
+            if(!nearEachOther(lastUserCoords, lastLocation, 1)) {
+                this.setState({lastLocation: lastUserCoords});
+                this.getPopularPlates();
+            }
+
+        });
+    };
+
     getPopularPlates = () => {
-        // loading
-        //this.setState({loading: true});
-        console.log("out");
         this.database.on('value', snapshot => {
-            console.log("in");
             const dataObj = snapshot.val();
             if(dataObj && Object.values(dataObj).length > 0) {
                 let popular = [];
@@ -101,12 +143,12 @@ export default class Home extends Component {
         const firebaseDBRef = firebase.database().ref(`/providers/${providerKey}`);
         firebaseDBRef.once('value', snap => {
             const provider = snap.val();
-            this.props.navigation.navigate('ProviderInfo', {provider: provider});    
+            this.props.navigation.navigate('ProviderInfo', {userLocation: this.state.userLocation, provider: provider});    
         });
     };
     
     handleSwipe = (cardIndex) => {
-        this.setState({cardIndex:cardIndex + 1});
+        this.setState({cardIndex:cardIndex});
     };
 
     render () {
@@ -138,7 +180,7 @@ export default class Home extends Component {
                                 </View>
                             );
                         }}
-                        onTapCard={() => this.props.navigation.navigate('BigPicture', {uri:this.state.data[this.state.cardIndex].url})}
+                        onTapCard={() => this.props.navigation.navigate('BigPicture', {uri:this.state.data[this.state.cardIndex + 1].url})}
                         disableBottomSwipe={true}
                         disableTopSwipe={true}
                         animateOverlayLabelsOpacity={true}

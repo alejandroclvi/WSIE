@@ -31,6 +31,8 @@ export default class ProviderInfo extends Component {
             phone,
             location
         } = this.props.navigation.state.params.provider;
+        const userLocation = this.props.navigation.state.params.userLocation;
+
         const formattedMenu = Object.values(menu).sort( category => {
             if(category.title.toLowerCase() == 'popular') {
                 return -1;
@@ -38,6 +40,7 @@ export default class ProviderInfo extends Component {
                 return 1;
             }
         });
+
         return (
             <View style={styles.container}>
                 <ScrollView style={{flex:1}}>
@@ -52,7 +55,7 @@ export default class ProviderInfo extends Component {
                     />    
                 </View>
 
-                <Gadgets phone={phone} name={name}/>
+                <Gadgets source={userLocation} destination={location} phone={phone} name={name}/>
 
                 <View style={{marginTop:15}} />
                 
@@ -65,13 +68,13 @@ export default class ProviderInfo extends Component {
 
                 <View style={styles.mapContainer}>
                     <MapComponent 
-                        userLocationLat={25.749718515267066} 
-                        userLocationLon={-80.25607891948833} 
-                        truckLocationLat={25.749718515267043} 
-                        truckLocationLon={-80.25607891948856} 
+                        userLocationLat={userLocation.lat} 
+                        userLocationLon={userLocation.lon} 
+                        truckLocationLat={location.lat} 
+                        truckLocationLon={location.lon} 
                         region={{
-                            latitude:25.749718515267043,
-                            longitude:-80.25607891948856,
+                            latitude:location.lat,
+                            longitude:location.lon,
                             latitudeDelta:0.018,
                             longitudeDelta:0.018,
                         }} 
